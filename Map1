@@ -1,0 +1,48 @@
+import pandas as pd
+from pyecharts import options as opts
+from pyecharts.charts import Map
+
+
+def draw_map(countrys_names, confirmed_count):
+    """
+    draw the world map
+    :return:
+    """
+
+    # countrys_names, confirmed_count = read_csv()
+    # print(countrys_names)
+    # print(confirmed_count)
+
+    c = (
+        Map()
+            .add(
+            "Confirmed",
+            [list(z) for z in zip(countrys_names, confirmed_count)],
+            is_map_symbol_show=False,
+            maptype="world",
+            label_opts=opts.LabelOpts(is_show=False),
+            itemstyle_opts=opts.ItemStyleOpts(color="rgb(49,60,72)")
+        )
+            .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
+            .set_global_opts(
+            title_opts=opts.TitleOpts(title="Global 2019-nCoV Map"),
+            visualmap_opts=opts.VisualMapOpts(max_=4300000, min_=0),
+        )
+            .render("map_world.html")
+    )
+
+
+if __name__ == '__main__':
+    # read the data from csv file
+    country_wise = pd.read_csv('./country_wise_latest.csv')
+    print("Country Wise Data shape =", country_wise.shape)
+    print(country_wise.head())
+    # contry name
+    countrys_names = country_wise["Country/Region"].tolist()
+    # confirmed
+    confirmed_count = country_wise["Confirmed"].tolist()
+    print(countrys_names)
+    print(confirmed_count)
+    # draw the map of covid-19
+    draw_map(countrys_names, confirmed_count)
+
